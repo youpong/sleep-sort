@@ -1,7 +1,7 @@
 package sleep_sort
 
 import (
-	//"sleep_sort"
+	"sync"
 	"testing"
 )
 
@@ -32,32 +32,42 @@ func sameArray(a []int, b []int) bool {
 	return true
 }
 
-func TestFoo(t *testing.T) {
-
-	tests := []struct {
+func TestNormal(t *testing.T) {
+	type testSet struct {
+		name   string
 		want   []int
 		sample []int
-	}{
+	}
+
+	tests := []testSet{
 		{
+			name:   "one element",
 			want:   []int{1},
 			sample: []int{1},
 		}, {
+			name:   "two elements",
 			want:   []int{1, 2},
 			sample: []int{2, 1},
 		}, {
+			name:   "five elements",
 			want:   []int{1, 2, 3, 4, 5},
 			sample: []int{5, 4, 2, 3, 1},
 		}, {
+			name:   "same value",
 			want:   []int{1, 1, 2, 2},
 			sample: []int{2, 1, 1, 2},
 		},
 	}
 
-	for i, tt := range tests {
-		if got := SleepSort(tt.sample); !sameArray(got, tt.want) {
-			t.Errorf("%v) got = %v, want %v", i, got, tt.want)
-		}
+	var wg sync.WaitGroup
+	for _, ts := range tests {
+		wg.Add(1)
+		go func(ts testSet) {
+			if got := SleepSort(ts.sample); !sameArray(got, ts.want) {
+				t.Errorf("%v) got = %v, want %v", ts.name, got, ts.want)
+			}
+			wg.Done()
+		}(ts)
 	}
+	wg.Wait()
 }
-
-//sleep_sort.SleepSort(nil)
