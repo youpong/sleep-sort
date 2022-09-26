@@ -73,14 +73,17 @@ func TestNormal(t *testing.T) {
 }
 
 func TestScale(t *testing.T) {
-	sample := make([]int, 128)
+	sample := make([]int, 256*1024)
 	for i, _ := range sample {
 		sample[i] = 2
 	}
-	sample[0] = 3
 	sample[len(sample)-1] = 1
 
 	if r := SleepSort(sample); !testOrder(r) {
-		t.Errorf("r[0] = %v, r[1] = %v, r[len(r)-1] = %v", r[0], r[1], r[len(r)-1])
+		for i, _ := range r {
+			if r[i] == 1 {
+				t.Errorf("r[%v] = 1", i)
+			}
+		}
 	}
 }

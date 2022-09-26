@@ -15,7 +15,7 @@ func SleepSort(a []int) []int {
 	for _, v := range a {
 		wg.Add(1)
 		go func(v int) {
-			time.Sleep(time.Duration(v) * time.Millisecond)
+			time.Sleep(time.Duration(v) * time.Second)
 			lock.Lock()
 			res[tail] = v
 			tail++
