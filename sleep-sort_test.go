@@ -73,7 +73,7 @@ func TestNormal(t *testing.T) {
 }
 
 func TestScale(t *testing.T) {
-	sample := make([]int, 2048)
+	sample := make([]int, 128)
 	for i, _ := range sample {
 		sample[i] = 2
 	}
