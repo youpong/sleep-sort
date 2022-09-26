@@ -1,4 +1,4 @@
-package main
+package sleep_sort
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func sleepSort(a []int) []int {
+func SleepSort(a []int) []int {
 	res := make([]int, len(a))
 	var wg sync.WaitGroup
 
@@ -16,7 +16,8 @@ func sleepSort(a []int) []int {
 		wg.Add(1)
 		go func(v int) {
 			//time.Sleep(time.Duration(v) * time.Microsecond)
-			time.Sleep(time.Duration(v) * time.Millisecond)
+			//time.Sleep(time.Duration(v) * time.Millisecond)
+			time.Sleep(time.Duration(v) * time.Second)
 			lock.Lock()
 			res[tail] = v
 			tail++
@@ -30,7 +31,7 @@ func sleepSort(a []int) []int {
 }
 
 func sortAndPrint(a []int) {
-	res := sleepSort(a)
+	res := SleepSort(a)
 	fmt.Println(res)
 }
 
