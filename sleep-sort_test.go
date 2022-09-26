@@ -71,3 +71,16 @@ func TestNormal(t *testing.T) {
 	}
 	wg.Wait()
 }
+
+func TestScale(t *testing.T) {
+	sample := make([]int, 2048)
+	for i, _ := range sample {
+		sample[i] = 2
+	}
+	sample[0] = 3
+	sample[len(sample)-1] = 1
+
+	if r := SleepSort(sample); !testOrder(r) {
+		t.Errorf("r[0] = %v, r[1] = %v, r[len(r)-1] = %v", r[0], r[1], r[len(r)-1])
+	}
+}
