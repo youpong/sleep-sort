@@ -1,4 +1,4 @@
-package sleep_sort
+package main
 
 import (
 	"fmt"
@@ -10,7 +10,7 @@ func SleepSort(a []int) []int {
 	res := make([]int, len(a))
 	var wg sync.WaitGroup
 
-	tail := 0
+	var tail int
 	var lock sync.Mutex
 	for _, v := range a {
 		wg.Add(1)

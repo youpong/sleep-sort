@@ -1,23 +1,9 @@
-package sleep_sort
+package main
 
 import (
 	"sync"
 	"testing"
 )
-
-func testOrder(a []int) bool {
-	if len(a) == 0 {
-		return true
-	}
-
-	prev := a[0]
-	for _, v := range a {
-		if prev > v {
-			return false
-		}
-	}
-	return true
-}
 
 func sameArray(a []int, b []int) bool {
 	if len(a) != len(b) {
@@ -72,7 +58,7 @@ func TestNormal(t *testing.T) {
 	wg.Wait()
 }
 
-func TestScale(t *testing.T) {
+func TestTail2Head(t *testing.T) {
 	sample := make([]int, 256*1024)
 	for i, _ := range sample {
 		sample[i] = 2
@@ -82,8 +68,39 @@ func TestScale(t *testing.T) {
 	if r := SleepSort(sample); !testOrder(r) {
 		for i, _ := range r {
 			if r[i] == 1 {
-				t.Errorf("r[%v] = 1", i)
+				t.Errorf("Value 1 should be at first but found at %d", i)
 			}
 		}
 	}
+}
+
+func TestHead2Tail(t *testing.T) {
+	sample := make([]int, 512*1024)
+	for i, _ := range sample {
+		sample[i] = 1
+	}
+	sample[0] = 2
+
+	if r := SleepSort(sample); !testOrder(r) {
+		for i, _ := range r {
+			if r[i] == 2 {
+				t.Errorf("Value 2 should be at last but found at %d", i)
+			}
+		}
+	}
+}
+
+func testOrder(a []int) bool {
+	if len(a) == 0 {
+		return true
+	}
+
+	prev := a[0]
+	for _, v := range a {
+		if prev > v {
+			return false
+		}
+		prev = v
+	}
+	return true
 }
