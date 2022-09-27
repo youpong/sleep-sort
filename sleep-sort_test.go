@@ -1,21 +1,31 @@
 package main
 
-import (
-	"sync"
-	"testing"
-)
+import "testing"
 
-func sameArray(a []int, b []int) bool {
-	if len(a) != len(b) {
-		return false
+func TestTail2Head(t *testing.T) {
+	sample := make([]int, 256*1024)
+	for i, _ := range sample {
+		sample[i] = 2
 	}
+	sample[len(sample)-1] = 1
 
-	for i, _ := range a {
-		if a[i] != b[i] {
-			return false
-		}
+	r := SleepSort(sample)
+	if i := compareNext(r); i != -1 {
+		t.Errorf("wrong value(%d) at %d of %d", r[i], i, len(r)-1)
 	}
-	return true
+}
+
+func TestHead2Tail(t *testing.T) {
+	sample := make([]int, 512*1024)
+	for i, _ := range sample {
+		sample[i] = 1
+	}
+	sample[0] = 2
+
+	r := SleepSort(sample)
+	if i := compareNext(r); i != -1 {
+		t.Errorf("wrong value(%d) at %d of %d", r[i], i, len(r)-1)
+	}
 }
 
 func TestNormal(t *testing.T) {
@@ -39,68 +49,45 @@ func TestNormal(t *testing.T) {
 			want:   []int{1, 2, 3, 4, 5},
 			sample: []int{5, 4, 2, 3, 1},
 		}, {
-			name:   "same value",
+			name:   "duplicated values",
 			want:   []int{1, 1, 2, 2},
 			sample: []int{2, 1, 1, 2},
 		},
 	}
 
-	var wg sync.WaitGroup
 	for _, ts := range tests {
-		wg.Add(1)
-		go func(ts testSet) {
-			if got := SleepSort(ts.sample); !sameArray(got, ts.want) {
-				t.Errorf("%v) got = %v, want %v", ts.name, got, ts.want)
-			}
-			wg.Done()
-		}(ts)
-	}
-	wg.Wait()
-}
-
-func TestTail2Head(t *testing.T) {
-	sample := make([]int, 256*1024)
-	for i, _ := range sample {
-		sample[i] = 2
-	}
-	sample[len(sample)-1] = 1
-
-	if r := SleepSort(sample); !testOrder(r) {
-		for i, _ := range r {
-			if r[i] == 1 {
-				t.Errorf("Value 1 should be at first but found at %d", i)
-			}
+		if got := SleepSort(ts.sample); !sameArray(got, ts.want) {
+			t.Errorf("%v) got = %v, want %v", ts.name, got, ts.want)
 		}
 	}
 }
 
-func TestHead2Tail(t *testing.T) {
-	sample := make([]int, 512*1024)
-	for i, _ := range sample {
-		sample[i] = 1
+func sameArray(a []int, b []int) bool {
+	if len(a) != len(b) {
+		return false
 	}
-	sample[0] = 2
 
-	if r := SleepSort(sample); !testOrder(r) {
-		for i, _ := range r {
-			if r[i] == 2 {
-				t.Errorf("Value 2 should be at last but found at %d", i)
-			}
+	for i, _ := range a {
+		if a[i] != b[i] {
+			return false
 		}
 	}
+	return true
 }
 
-func testOrder(a []int) bool {
+// -1: ordered
+// not -1: not ordered index
+func compareNext(a []int) int {
 	if len(a) == 0 {
-		return true
+		return -1
 	}
 
 	prev := a[0]
-	for _, v := range a {
+	for i, v := range a {
 		if prev > v {
-			return false
+			return i
 		}
 		prev = v
 	}
-	return true
+	return -1
 }
