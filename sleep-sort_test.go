@@ -10,7 +10,7 @@ func TestTail2Head(t *testing.T) {
 	sample[len(sample)-1] = 1
 
 	r := SleepSort(sample)
-	if i := compareNext(r); i != -1 {
+	if i, ok := checkOrder(r); !ok {
 		t.Errorf("wrong value(%d) at %d of %d", r[i], i, len(r)-1)
 	}
 }
@@ -23,7 +23,7 @@ func TestHead2Tail(t *testing.T) {
 	sample[0] = 2
 
 	r := SleepSort(sample)
-	if i := compareNext(r); i != -1 {
+	if i, ok := checkOrder(r); !ok {
 		t.Errorf("wrong value(%d) at %d of %d", r[i], i, len(r)-1)
 	}
 }
@@ -75,19 +75,17 @@ func sameArray(a []int, b []int) bool {
 	return true
 }
 
-// -1: ordered
-// not -1: not ordered index
-func compareNext(a []int) int {
+func checkOrder(a []int) (int, bool) {
 	if len(a) == 0 {
-		return -1
+		return -1, true
 	}
 
 	prev := a[0]
 	for i, v := range a {
 		if prev > v {
-			return i
+			return i, false
 		}
 		prev = v
 	}
-	return -1
+	return -1, true
 }
