@@ -2,6 +2,8 @@ package main
 
 import "testing"
 
+// TODO: concurrency
+
 func TestTail2Head(t *testing.T) {
 	sample := make([]int, (128+32)*1024) // Intel Core2 Duo T9400@2.53GHz
 	for i, _ := range sample {
@@ -18,13 +20,26 @@ func TestTail2Head(t *testing.T) {
 	}
 }
 
-func TestNormal(t *testing.T) {
-	type testSet struct {
-		name   string
-		want   []int
-		sample []int
+type testSet struct {
+	name   string
+	want   []int
+	sample []int
+}
+
+func TestNegative(t *testing.T) {
+	ts := testSet{
+		name:   "negative",
+		want:   []int{},
+		sample: []int{-1},
 	}
 
+	err, _ := SleepSort(ts.sample)
+	if err == nil {
+		t.Errorf("Sould return error")
+	}
+}
+
+func TestNormal(t *testing.T) {
 	tests := []testSet{
 		{
 			name:   "one element",
@@ -46,7 +61,11 @@ func TestNormal(t *testing.T) {
 	}
 
 	for _, ts := range tests {
-		if _, got := SleepSort(ts.sample); !sameArray(got, ts.want) {
+		err, got := SleepSort(ts.sample)
+		if err != nil {
+			t.Errorf("%v", err)
+		}
+		if !sameArray(got, ts.want) {
 			t.Errorf("%v) got = %v, want %v", ts.name, got, ts.want)
 		}
 	}
