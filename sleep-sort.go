@@ -5,22 +5,26 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"sync"
 	"time"
 )
 
-func SleepSort(a []int) []int {
-	res := make([]int, len(a))
+func SleepSort(a []int) (error, []int) {
+	r := make([]int, len(a))
 	var wg sync.WaitGroup
 
 	var current int
 	var lock sync.Mutex
 	for _, v := range a {
+		if v < 0 {
+			return fmt.Errorf("Must be non-negative: %d", v), nil
+		}
 		wg.Add(1)
 		go func(v int) {
 			time.Sleep(time.Duration(v) * time.Second)
 			lock.Lock()
-			res[current] = v
+			r[current] = v
 			current++
 			lock.Unlock()
 			wg.Done()
@@ -28,15 +32,21 @@ func SleepSort(a []int) []int {
 	}
 	wg.Wait()
 
-	return res
+	return nil, r
 }
 
 func sortAndPrint(a []int) {
-	res := SleepSort(a)
+	err, res := SleepSort(a)
+	if err != nil {
+		fmt.Printf("Error: %v\n", err)
+		os.Exit(1)
+	}
+
 	fmt.Println(res)
 }
 
 func main() {
+	// sortAndPrint([]int{-1})
 	sortAndPrint([]int{1})
 	sortAndPrint([]int{2, 1})
 	sortAndPrint([]int{5, 4, 2, 3, 1})
