@@ -20,6 +20,6 @@ sleep が処理時間に及ぼす影響が大きいテストプログラムな�
 ※1)07-Sep-22 satlinuxtube(武内 覚),
 THE FIRST CODE 寝てたら終わるスリープソート(https://youtu.be/PSeIEBPnq-E)
 
-*2) Intel Core 2 Duo T9400@2.53GHz
+*2) Intel Core 2 Duo T9400 @ 2.53GHz
 
 *3) yoshikishibata, [Go言語でのテストの並列化 〜t.Parallel()メソッドを理解する〜](https://engineering.mercari.com/blog/entry/how_to_use_t_parallel/), mercari engineering
