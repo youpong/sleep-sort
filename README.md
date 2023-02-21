@@ -11,7 +11,7 @@
 
 ## How to test
 
-```bash
+```
 $ go test -parallel 4
 ```
 sleep が処理時間に及ぼす影響が大きいテストプログラムなので、 CPU の個数を超え
