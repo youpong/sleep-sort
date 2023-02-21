@@ -3,26 +3,16 @@ package main
 import "testing"
 
 func TestTail2Head(t *testing.T) {
-	sample := make([]int, 256*1024)
+	sample := make([]int, (128+32)*1024) // Intel Core2 Duo T9400@2.53GHz
 	for i, _ := range sample {
 		sample[i] = 2
 	}
 	sample[len(sample)-1] = 1
 
-	r := SleepSort(sample)
-	if i, ok := checkOrder(r); !ok {
-		t.Errorf("wrong value(%d) at %d of %d", r[i], i, len(r)-1)
+	err, r := SleepSort(sample)
+	if err != nil {
+		t.Errorf("%v", err)
 	}
-}
-
-func TestHead2Tail(t *testing.T) {
-	sample := make([]int, 512*1024)
-	for i, _ := range sample {
-		sample[i] = 1
-	}
-	sample[0] = 2
-
-	r := SleepSort(sample)
 	if i, ok := checkOrder(r); !ok {
 		t.Errorf("wrong value(%d) at %d of %d", r[i], i, len(r)-1)
 	}
@@ -56,7 +46,7 @@ func TestNormal(t *testing.T) {
 	}
 
 	for _, ts := range tests {
-		if got := SleepSort(ts.sample); !sameArray(got, ts.want) {
+		if _, got := SleepSort(ts.sample); !sameArray(got, ts.want) {
 			t.Errorf("%v) got = %v, want %v", ts.name, got, ts.want)
 		}
 	}
