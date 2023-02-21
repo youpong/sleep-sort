@@ -13,6 +13,7 @@ $ go test -parallel 4
 ```
 sleep が処理時間に及ぼす影響が大きいテストプログラムなので、 CPU の個数を超え
 て並行処理した方がパフォーマンスが出る。
+テストの並行化については、資料(*3)を参考にした。
 
 ## Footnote
 
@@ -20,3 +21,5 @@ sleep が処理時間に及ぼす影響が大きいテストプログラムな�
 THE FIRST CODE 寝てたら終わるスリープソート(https://youtu.be/PSeIEBPnq-E)
 
 *2) Intel Core 2 Duo T9400@2.53GHz
+
+*3) yoshikishibata, [Go言語でのテストの並列化 〜t.Parallel()メソッドを理解する〜](https://engineering.mercari.com/blog/entry/how_to_use_t_parallel/), mercari engineering
