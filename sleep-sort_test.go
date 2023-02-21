@@ -2,10 +2,9 @@ package main
 
 import "testing"
 
-// TODO: concurrency
-
 func TestTail2Head(t *testing.T) {
-	sample := make([]int, (128+32)*1024) // Intel Core2 Duo T9400@2.53GHz
+	t.Parallel()
+	sample := make([]int, (128+16)*1024) // Intel Core2 Duo T9400@2.53GHz
 	for i, _ := range sample {
 		sample[i] = 2
 	}
@@ -27,6 +26,7 @@ type testSet struct {
 }
 
 func TestNegative(t *testing.T) {
+	t.Parallel()
 	ts := testSet{
 		name:   "negative",
 		want:   []int{},
@@ -40,6 +40,7 @@ func TestNegative(t *testing.T) {
 }
 
 func TestNormal(t *testing.T) {
+	t.Parallel()
 	tests := []testSet{
 		{
 			name:   "one element",
@@ -61,13 +62,17 @@ func TestNormal(t *testing.T) {
 	}
 
 	for _, ts := range tests {
-		err, got := SleepSort(ts.sample)
-		if err != nil {
-			t.Errorf("%v", err)
-		}
-		if !sameArray(got, ts.want) {
-			t.Errorf("%v) got = %v, want %v", ts.name, got, ts.want)
-		}
+		ts := ts
+		t.Run(ts.name, func(t *testing.T) {
+			t.Parallel()
+			err, got := SleepSort(ts.sample)
+			if err != nil {
+				t.Errorf("%v", err)
+			}
+			if !sameArray(got, ts.want) {
+				t.Errorf("%v) got = %v, want %v", ts.name, got, ts.want)
+			}
+		})
 	}
 }
 
